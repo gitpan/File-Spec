@@ -1,4 +1,4 @@
-File::Spec 0.8-beta -- a module for portably manipulating file specifications
+File::Spec 0.81 -- a module for portably manipulating file specifications
 
 	Copyright (c) 1998 Kenneth Albanowski. All rights reserved.
 	This program is free software; you can redistribute it and/or
@@ -8,9 +8,9 @@ File::Spec 0.8-beta -- a module for portably manipulating file specifications
 	This program is free software; you can redistribute it and/or
 	modify it under the same terms as Perl itself.
 
-This module may work with Perl 5.004 and earlier (Perl 5.005 and later
+This module should work with Perl 5.004 and earlier (Perl 5.005 and later
 include a version of File::Spec with the distribution, though this version
-could be more recent.)  If it doesn't, bug reports and patches are welcome.
+could be more recent).  If it doesn't, bug reports and patches are welcome.
 
 To install this module, please run:
 
