@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: File-Spec
-version: 0.89
+version: 0.90
 author: Ken Williams <KWILLIAMS@cpan.org>
 abstract: portably perform operations on file names
 license: perl
@@ -13,7 +13,7 @@ build_requires:
 provides:
   File::Spec:
     file: lib/File/Spec.pm
-    version: 0.89
+    version: 0.90
   File::Spec::Cygwin:
     file: lib/File/Spec/Cygwin.pm
     version: 1.1
