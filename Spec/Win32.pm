@@ -293,7 +293,8 @@ sub abs2rel {
     my ( $path_volume, $path_directories, $path_file ) =
         $self->splitpath( $path, 1 ) ;
 
-    my ( undef, $base_directories, undef ) =
+    my $base_directories ;
+    ( undef, $base_directories, undef ) =
         $self->splitpath( $base, 1 ) ;
 
     # Now, remove all leading components that are the same
@@ -378,10 +379,11 @@ sub rel2abs($;$;) {
             $base = $self->canonpath( $base ) ;
         }
 
-        my ( undef, $path_directories, $path_file ) =
+        my ( $path_directories, $path_file ) ;
+        ( undef, $path_directories, $path_file ) =
             $self->splitpath( $path, 1 ) ;
 
-        my ( $base_volume, $base_directories, undef ) =
+        my ( $base_volume, $base_directories ) =
             $self->splitpath( $base, 1 ) ;
 
         $path = $self->catpath( 

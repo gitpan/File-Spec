@@ -400,13 +400,15 @@ sub abs2rel {
     }
 
     # Split up paths
-    my ( undef, $path_directories, $path_file ) =
+    my ( $path_directories, $path_file ) ;
+    ( undef, $path_directories, $path_file ) =
         $self->splitpath( $path, 1 ) ;
 
     $path_directories = $1
         if $path_directories =~ /^\[(.*)\]\z/s ;
 
-    my ( undef, $base_directories, undef ) =
+    my $base_directories ;
+    ( undef, $base_directories, undef ) =
         $self->splitpath( $base, 1 ) ;
 
     $base_directories = $1
@@ -458,10 +460,11 @@ sub rel2abs($;$;) {
         }
 
         # Split up paths
-        my ( undef, $path_directories, $path_file ) =
+        my ( $path_directories, $path_file ) ;
+        ( undef, $path_directories, $path_file ) =
             $self->splitpath( $path ) ;
 
-        my ( $base_volume, $base_directories, undef ) =
+        my ( $base_volume, $base_directories ) =
             $self->splitpath( $base ) ;
 
         $path_directories = '' if $path_directories eq '[]' ||
