@@ -1,0 +1,8 @@
+MANIFEST
+Makefile.PL
+Spec.pm
+Spec/OS2.pm
+Spec/Unix.pm
+Spec/VMS.pm
+Spec/Win32.pm
+t/base.t
