@@ -573,12 +573,13 @@ plan tests => scalar @tests;
 
     sub _cwd { 'C:\\one\\two' }
 
-    # Some funky stuff to override Cwd::getdcwd for testing purposes,
-    # in limited scope.
+    # Some funky stuff to override Cwd::getdcwd() for testing purposes,
+    # in the limited scope of the rel2abs() method.
     if ($Cwd::VERSION gt '2.17') {
 	local $^W;
 	*rel2abs = sub {
 	    my $self = shift;
+	    local $^W;
 	    local *Cwd::getdcwd = sub {
 	      return 'D:\alpha\beta' if $_[0] eq 'D:';
 	      return 'C:\one\two'    if $_[0] eq 'C:';
