@@ -7,6 +7,7 @@ require Exporter;
 use VMS::Filespec;
 use File::Basename;
 
+use File::Spec;
 use vars qw($Revision);
 $Revision = '5.3901 (6-Mar-1997)';
 

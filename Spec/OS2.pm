@@ -6,6 +6,7 @@ package File::Spec::OS2;
 use strict;
 require Exporter;
 
+use File::Spec;
 use vars qw(@ISA);
 
 Exporter::import('File::Spec',
@@ -18,6 +19,16 @@ $ENV{EMXSHELL} = 'sh'; # to run `commands`
 sub file_name_is_absolute {
     my($self,$file) = @_;
     $file =~ m{^([a-z]:)?[\\/]}i ;
+}
+
+sub path {
+    my($self) = @_;
+    my $path_sep = ";";
+    my $path = $ENV{PATH};
+    $path =~ s:\\:/:g;
+    my @path = split $path_sep, $path;
+    foreach(@path) { $_ = '.' if $_ eq '' }
+    @path;
 }
 
 1;

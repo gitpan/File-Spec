@@ -5,10 +5,8 @@ use Config;
 use File::Basename qw(basename dirname fileparse);
 use DirHandle;
 use strict;
-use vars qw(@ISA $VERSION $Is_Mac $Is_OS2 $Is_VMS $Is_Win32);
-
-$VERSION = substr q$Revision: 1.114 $, 10;
-# $Id: MM_Unix.pm,v 1.113 1997/02/11 21:54:09 k Exp $
+use vars qw(@ISA $Is_Mac $Is_OS2 $Is_VMS $Is_Win32);
+use File::Spec;
 
 Exporter::import('File::Spec', '$Verbose');
 
@@ -127,6 +125,18 @@ sub updir {
     return "..";
 }
 
+=item no_upwards
+
+Given a list of file names, strip out those that refer to a parent
+directory. (Does not strip symlinks, only '.', '..', and equivalents.)
+
+=cut
+
+sub no_upwards {
+    my($self) = shift;
+    return grep(!/^\.{1,2}$/, @_);
+}
+
 =item file_name_is_absolute
 
 Takes as argument a path and returns true, if it is an absolute path.
@@ -146,12 +156,33 @@ Takes no argument, returns the environment variable PATH as an array.
 
 sub path {
     my($self) = @_;
-    my $path_sep = $Is_OS2 ? ";" : ":";
+    my $path_sep = ":";
     my $path = $ENV{PATH};
-    $path =~ s:\\:/:g if $Is_OS2;
     my @path = split $path_sep, $path;
     foreach(@path) { $_ = '.' if $_ eq '' }
     @path;
+}
+
+=item join
+
+join is the same as catfile.
+
+=cut
+
+sub join {
+	my($self) = shift @_;
+	$self->catfile(@_);
+}
+
+=item nativename
+
+TBW.
+
+=cut
+
+sub nativename {
+	my($self,$name) = shift @_;
+	$name;
 }
 
 =back

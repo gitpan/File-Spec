@@ -26,6 +26,7 @@ use strict;
 
 use vars qw(@ISA);
 
+use File::Spec;
 Exporter::import('File::Spec', qw( $Verbose));
 
 @ISA = qw(File::Spec::Unix);

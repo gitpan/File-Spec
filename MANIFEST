@@ -1,6 +1,7 @@
 MANIFEST
 Makefile.PL
 Spec.pm
+Spec/Mac.pm
 Spec/OS2.pm
 Spec/Unix.pm
 Spec/VMS.pm

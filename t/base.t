@@ -1,8 +1,13 @@
 #!/usr/bin/perl
 
-print "1..3\n";
+print "1..4\n";
+
+BEGIN {
+	$^O = '';
+}
 
 use File::Spec;
+
 
 if (File::Spec->catfile('a','b','c') eq 'a/b/c') {
 	print "ok 1\n";
@@ -25,3 +30,12 @@ if (File::Spec::Win32->catfile('a','b','c') eq 'a\b\c') {
 } else {
 	print "not ok 3\n";
 }
+
+use File::Spec::Mac;
+
+if (File::Spec::Mac->catfile('a','b','c') eq 'a:b:c') {
+	print "ok 4\n";
+} else {
+	print "not ok 4\n";
+}
+
