@@ -1,5 +1,10 @@
 CHANGES for File::Spec
 
+0.86  Fri Sep 26 10:07:39 CDT 2003
+
+ - This is the version released with perl 5.8.1.  It is identical to
+   the code in the File::Spec beta 0.85_03.
+
 0.85_03  Mon Sep 15 09:35:53 CDT 2003
 
  - On VMS, if catpath() receives volume specifiers in both its first
