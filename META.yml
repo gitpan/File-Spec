@@ -1,0 +1,38 @@
+--- #YAML:1.0
+name: File-Spec
+version: 0.84
+license: perl
+distribution_type: module
+requires: {}
+recommends: {}
+build_requires: {}
+conflicts: {}
+provides:
+  File::Spec:
+    file: lib/File/Spec.pm
+    version: 0.84
+  File::Spec::Cygwin:
+    file: lib/File/Spec/Cygwin.pm
+    version: 1.0
+  File::Spec::Epoc:
+    file: lib/File/Spec/Epoc.pm
+    version: 1.1
+  File::Spec::Functions:
+    file: lib/File/Spec/Functions.pm
+    version: 1.3
+  File::Spec::Mac:
+    file: lib/File/Spec/Mac.pm
+    version: 1.4
+  File::Spec::OS2:
+    file: lib/File/Spec/OS2.pm
+    version: 1.2
+  File::Spec::Unix:
+    file: lib/File/Spec/Unix.pm
+    version: 1.4
+  File::Spec::VMS:
+    file: lib/File/Spec/VMS.pm
+    version: 1.4
+  File::Spec::Win32:
+    file: lib/File/Spec/Win32.pm
+    version: 1.4
+generated_by: Module::Build version 0.18_04

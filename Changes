@@ -1,0 +1,71 @@
+CHANGES for File::Spec
+
+0.84
+
+ I've taken the changes from bleadperl and created a new CPAN release
+ from them, since they're pretty important changes.  The highlights,
+ from what I can tell, are listed here.
+
+ - A huge number of changes to File::Spec::Mac in order to bring it in
+   line with the other platforms.  This work was mostly/completely
+   done by Thomas Wegner.
+
+ - The Epoc and Cygwin platforms are now supported.
+
+ - Lots of generically-applicable documentation has been taken from
+   File::Spec::Unix and put in File::Spec.
+
+ - A Build.PL has been provided for people who wish to install via
+   Module::Build.
+
+ - Some spurious warnings and errors in the tests have been
+   eliminated. [Michael Schwern]
+
+ - canonpath() on File::Spec::Unix now honors a //node-name at the
+   beginning of a path.
+
+ - Cwd.pm wasn't being loaded properly on MacOS. [Chris Nandor]
+
+ - Various POD fixups
+
+ - Several testing patches for the Epoc and Cygwin platforms [Tels]
+
+ - When running under taint mode and perl >= 5.8, all the tmpdir()
+   implementations now avoid returning a tainted path.
+
+ - File::Spec::OS2 now implements canonpath(), splitpath(),
+   splitdir(), catpath(), abs2rel(), and rel2abs() directly rather
+   than inheriting them from File::Spec::Unix.
+
+ - Added 'SYS:/temp' and 'C:/temp' to the list of possible tmpdir()s
+   on Win32.
+
+ - catfile() on Win32 and VMS will now automatically call canonpath()
+   on its final argument.
+
+ - canonpath() on Win32 now does a much more extensive cleanup of the
+   path.
+
+ - abs2rel() on Win32 now defaults to using cwd() as the base of
+   relativity when no base is given.
+
+ - abs2rel() on Win32 now explicitly ignores any volume component in
+   the $path argument.
+
+ - canonpath() on VMS now does []foo ==> foo, and foo.000000] ==> foo].
+   It also fixes a bug in multiple [000000.foo ==> [foo translations.
+
+ - tmpdir() on VMS now uses 'sys$scratch:' instead of 'sys$scratch'.
+
+ - abs2rel() on VMS now uses '000000' in both the path and the base.
+
+0.82 Wed Jun 28 11:24:05 EDT 2000
+   - Mac.pm: file_name_is_absolute( '' ) now returns TRUE on all platforms
+   - Spec.pm: unbreak C<$VERSION = '0.xx'> to be C<$VERSION = 0.xx>, so
+     underscores can be used when I want to update CPAN without anyone
+     needing to update the perl repository.
+   - abs2rel, rel2abs doc tweaks
+   - VMS.pm: get $path =~ /\s/ checks from perl repository.
+   - Makefile.PL: added INSTALLDIRS => 'perl', since these are std. modules.
+   - Remove vestigial context prototypes from &rel2abs until some future
+     arrives where method prototypes are honored.

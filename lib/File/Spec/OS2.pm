@@ -1,7 +1,6 @@
-package File::Spec::Win32;
+package File::Spec::OS2;
 
 use strict;
-use Cwd;
 use vars qw(@ISA $VERSION);
 require File::Spec::Unix;
 
@@ -9,31 +8,28 @@ $VERSION = '1.2';
 
 @ISA = qw(File::Spec::Unix);
 
-=head1 NAME
-
-File::Spec::Win32 - methods for Win32 file specs
-
-=head1 SYNOPSIS
-
- require File::Spec::Win32; # Done internally by File::Spec if needed
-
-=head1 DESCRIPTION
-
-See File::Spec::Unix for a documentation of the methods provided
-there. This package overrides the implementation of these methods, not
-the semantics.
-
-=over
-
-=item devnull
-
-Returns a string representation of the null device.
-
-=cut
-
 sub devnull {
-    return "nul";
+    return "/dev/nul";
 }
+
+sub case_tolerant {
+    return 1;
+}
+
+sub file_name_is_absolute {
+    my ($self,$file) = @_;
+    return scalar($file =~ m{^([a-z]:)?[\\/]}is);
+}
+
+sub path {
+    my $path = $ENV{PATH};
+    $path =~ s:\\:/:g;
+    my @path = split(';',$path);
+    foreach (@path) { $_ = '.' if $_ eq '' }
+    return @path;
+}
+
+=pod
 
 =item tmpdir
 
@@ -46,52 +42,18 @@ from the following list:
     /tmp
     /
 
+Since Perl 5.8.0, if running under taint mode, and if the environment
+variables are tainted, they are not used.
+
 =cut
 
 my $tmpdir;
 sub tmpdir {
     return $tmpdir if defined $tmpdir;
     my $self = shift;
-    foreach (@ENV{qw(TMPDIR TEMP TMP)}, qw(/tmp /)) {
-	next unless defined && -d;
-	$tmpdir = $_;
-	last;
-    }
-    $tmpdir = '' unless defined $tmpdir;
-    $tmpdir = $self->canonpath($tmpdir);
-    return $tmpdir;
-}
-
-sub case_tolerant {
-    return 1;
-}
-
-sub file_name_is_absolute {
-    my ($self,$file) = @_;
-    return scalar($file =~ m{^([a-z]:)?[\\/]}is);
-}
-
-=item catfile
-
-Concatenate one or more directory names and a filename to form a
-complete path ending with a filename
-
-=cut
-
-sub catfile {
-    my $self = shift;
-    my $file = pop @_;
-    return $file unless @_;
-    my $dir = $self->catdir(@_);
-    $dir .= "\\" unless substr($dir,-1) eq "\\";
-    return $dir.$file;
-}
-
-sub path {
-    my $path = $ENV{'PATH'} || $ENV{'Path'} || $ENV{'path'};
-    my @path = split(';',$path);
-    foreach (@path) { $_ = '.' if $_ eq '' }
-    return @path;
+    $tmpdir = $self->_tmpdir( @ENV{qw(TMPDIR TEMP TMP)},
+			      '/tmp',
+			      '/'  );
 }
 
 =item canonpath
@@ -103,13 +65,13 @@ path. On UNIX eliminated successive slashes and successive "/.".
 
 sub canonpath {
     my ($self,$path) = @_;
-    $path =~ s/^([a-z]:)/\u$1/s;
-    $path =~ s|/|\\|g;
-    $path =~ s|([^\\])\\+|$1\\|g;                  # xx////xx  -> xx/xx
-    $path =~ s|(\\\.)+\\|\\|g;                     # xx/././xx -> xx/xx
-    $path =~ s|^(\.\\)+||s unless $path eq ".\\";  # ./xx      -> xx
-    $path =~ s|\\\Z(?!\n)||
-             unless $path =~ m#^([A-Z]:)?\\\Z(?!\n)#s;   # xx/       -> xx
+    $path =~ s/^([a-z]:)/\l$1/s;
+    $path =~ s|\\|/|g;
+    $path =~ s|([^/])/+|$1/|g;                  # xx////xx  -> xx/xx
+    $path =~ s|(/\.)+/|/|g;                     # xx/././xx -> xx/xx
+    $path =~ s|^(\./)+(?=[^/])||s;		# ./xx      -> xx
+    $path =~ s|/\Z(?!\n)||
+             unless $path =~ m#^([a-z]:)?/\Z(?!\n)#si;# xx/       -> xx
     return $path;
 }
 
@@ -118,10 +80,10 @@ sub canonpath {
     ($volume,$directories,$file) = File::Spec->splitpath( $path );
     ($volume,$directories,$file) = File::Spec->splitpath( $path, $no_file );
 
-Splits a path in to volume, directory, and filename portions. Assumes that 
-the last file is a path unless the path ends in '\\', '\\.', '\\..'
+Splits a path into volume, directory, and filename portions. Assumes that 
+the last file is a path unless the path ends in '/', '/.', '/..'
 or $no_file is true.  On Win32 this means that $no_file true makes this return 
-( $volume, $path, undef ).
+( $volume, $path, '' ).
 
 Separators accepted are \ and /.
 
@@ -163,7 +125,7 @@ sub splitpath {
 
 =item splitdir
 
-The opposite of L</catdir()>.
+The opposite of L<catdir()|File::Spec/catdir()>.
 
     @dirs = File::Spec->splitdir( $directories );
 
@@ -175,7 +137,7 @@ Unlike just splitting the directories on the separator, leading empty and
 trailing directory entries can be returned, because these are significant
 on some OSs. So,
 
-    File::Spec->splitdir( "/a/b/c" );
+    File::Spec->splitdir( "/a/b//c/" );
 
 Yields:
 
@@ -185,23 +147,7 @@ Yields:
 
 sub splitdir {
     my ($self,$directories) = @_ ;
-    #
-    # split() likes to forget about trailing null fields, so here we
-    # check to be sure that there will not be any before handling the
-    # simple case.
-    #
-    if ( $directories !~ m|[\\/]\Z(?!\n)| ) {
-        return split( m|[\\/]|, $directories );
-    }
-    else {
-        #
-        # since there was a trailing separator, add a file name to the end, 
-        # then do the split, then replace it with ''.
-        #
-        my( @directories )= split( m|[\\/]|, "${directories}dummy" ) ;
-        $directories[ $#directories ]= '' ;
-        return @directories ;
-    }
+    split m|[\\/]|, $directories, -1;
 }
 
 
@@ -232,7 +178,7 @@ sub catpath {
          $file   =~ m@[^\\/]@
        ) {
         $volume =~ m@([\\/])@ ;
-        my $sep = $1 ? $1 : '\\' ;
+        my $sep = $1 ? $1 : '/' ;
         $volume .= $sep ;
     }
 
@@ -248,24 +194,21 @@ sub abs2rel {
     # Clean up $path
     if ( ! $self->file_name_is_absolute( $path ) ) {
         $path = $self->rel2abs( $path ) ;
-    }
-    else {
+    } else {
         $path = $self->canonpath( $path ) ;
     }
 
     # Figure out the effective $base and clean it up.
-    if ( ! $self->file_name_is_absolute( $base ) ) {
+    if ( !defined( $base ) || $base eq '' ) {
+        $base = Cwd::sys_cwd() ;
+    } elsif ( ! $self->file_name_is_absolute( $base ) ) {
         $base = $self->rel2abs( $base ) ;
-    }
-    elsif ( !defined( $base ) || $base eq '' ) {
-        $base = cwd() ;
-    }
-    else {
+    } else {
         $base = $self->canonpath( $base ) ;
     }
 
     # Split up paths
-    my ( $path_volume, $path_directories, $path_file ) =
+    my ( undef, $path_directories, $path_file ) =
         $self->splitpath( $path, 1 ) ;
 
     my $base_directories = ($self->splitpath( $base, 1 ))[1] ;
@@ -283,31 +226,28 @@ sub abs2rel {
     }
 
     # No need to catdir, we know these are well formed.
-    $path_directories = CORE::join( '\\', @pathchunks );
-    $base_directories = CORE::join( '\\', @basechunks );
+    $path_directories = CORE::join( '/', @pathchunks );
+    $base_directories = CORE::join( '/', @basechunks );
 
     # $base_directories now contains the directories the resulting relative
     # path must ascend out of before it can descend to $path_directory.  So, 
     # replace all names with $parentDir
 
     #FA Need to replace between backslashes...
-    $base_directories =~ s|[^\\]+|..|g ;
+    $base_directories =~ s|[^\\/]+|..|g ;
 
     # Glue the two together, using a separator if necessary, and preventing an
     # empty result.
 
     #FA Must check that new directories are not empty.
     if ( $path_directories ne '' && $base_directories ne '' ) {
-        $path_directories = "$base_directories\\$path_directories" ;
+        $path_directories = "$base_directories/$path_directories" ;
     } else {
         $path_directories = "$base_directories$path_directories" ;
     }
 
-    # It makes no sense to add a relative path to a UNC volume
-    $path_volume = '' unless $path_volume =~ m{^[A-Z]:}is ;
-
     return $self->canonpath( 
-        $self->catpath($path_volume, $path_directories, $path_file ) 
+        $self->catpath( "", $path_directories, $path_file ) 
     ) ;
 }
 
@@ -318,7 +258,7 @@ sub rel2abs {
     if ( ! $self->file_name_is_absolute( $path ) ) {
 
         if ( !defined( $base ) || $base eq '' ) {
-            $base = cwd() ;
+            $base = Cwd::sys_cwd() ;
         }
         elsif ( ! $self->file_name_is_absolute( $base ) ) {
             $base = $self->rel2abs( $base ) ;
@@ -343,12 +283,19 @@ sub rel2abs {
     return $self->canonpath( $path ) ;
 }
 
-=back
-
-=head1 SEE ALSO
-
-L<File::Spec>
-
-=cut
-
 1;
+__END__
+
+=head1 NAME
+
+File::Spec::OS2 - methods for OS/2 file specs
+
+=head1 SYNOPSIS
+
+ require File::Spec::OS2; # Done internally by File::Spec if needed
+
+=head1 DESCRIPTION
+
+See File::Spec::Unix for a documentation of the methods provided
+there. This package overrides the implementation of these methods, not
+the semantics.
