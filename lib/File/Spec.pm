@@ -3,7 +3,7 @@ package File::Spec;
 use strict;
 use vars qw(@ISA $VERSION);
 
-$VERSION = '0.87';
+$VERSION = '0.87_01';
 
 my %module = (MacOS   => 'Mac',
 	      MSWin32 => 'Win32',
@@ -286,8 +286,11 @@ L<File::Spec::Unix>, L<File::Spec::Mac>, L<File::Spec::OS2>,
 L<File::Spec::Win32>, L<File::Spec::VMS>, L<File::Spec::Functions>,
 L<ExtUtils::MakeMaker>
 
-=head1 AUTHORS
+=head1 AUTHOR
 
+Currently maintained by Ken Williams <KWILLIAMS@cpan.org>.
+
+The vast majority of the code was written by
 Kenneth Albanowski <kjahds@kjahds.com>, Andy Dougherty
 <doughera@lafayette.edu>, Andreas KE<ouml>nig
 <A.Koenig@franz.ww.TU-Berlin.DE>, Tim Bunce <Tim.Bunce@ig.co.uk.

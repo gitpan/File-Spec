@@ -1,5 +1,15 @@
 CHANGES for File::Spec
 
+0.88  (pending, still in beta release)
+
+ - rel2abs() on Win32 will now use the new Cwd::getdcwd() function, so
+   that things like rel2abs('D:foo.txt') work properly when the
+   current drive isn't 'D'. This requires Cwd version 2.18.  
+   [Steve Hay]
+
+ - Got rid of a redundant double-backslash in a character
+   class. [Alexander Farber]
+
 0.87  Fri Dec 19 08:03:28 CST 2003
 
  - With a one-line change in the tests, backported to perl 5.004.
