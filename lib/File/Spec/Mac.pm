@@ -14,6 +14,9 @@ if ($^O eq 'MacOS') {
 	$macfiles = eval { require Mac::Files };
 }
 
+sub case_tolerant { 1 }
+
+
 =head1 NAME
 
 File::Spec::Mac - File::Spec for Mac OS (Classic)

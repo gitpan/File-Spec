@@ -1,5 +1,27 @@
 CHANGES for File::Spec
 
+0.85
+
+ A bug-fix release relative to 0.84.  I've forked development into a
+ "stable" branch (this one) and a more aggressive branch (as yet
+ unreleased), with an eye toward getting the stable features in perl
+ 5.8.1.
+
+ - File::Spec::Mac->case_tolerant() returned 0 when it should have
+   returned 1.
+
+ - Many cases in File::Spec::Win32->abs2rel() were broken, because of
+   the way in which volumes were/weren't ignored.  Unfortunately, part
+   of the regression tests were broken too.  Now, if the $path
+   argument to abs2rel() is on a different volume than the $base
+   argument, the result will be an absolute path rather than the
+   broken relative path previous versions returned.
+
+ - Fixed a problem in File::Spec::Win32->canonpath, which was turning
+   \../foo into "foo" rather than \foo
+
+ - Greatly simplified the code in File::Spec::Unix->splitdir().
+
 0.84_01  Fri Jul 11 16:14:29 CDT 2003
 
  No actual code changes, just changes in other distribution files

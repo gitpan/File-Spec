@@ -172,6 +172,10 @@ if ($^O eq 'MacOS') {
 [ "Win32->catdir('')",                      '\\'                 ],
 [ "Win32->catdir('/')",                     '\\'                 ],
 [ "Win32->catdir('//d1','d2')",             '\\\\d1\\d2'         ],
+[ "Win32->catdir('\\d1\\','d2')",           '\\d1\\d2'         ],
+[ "Win32->catdir('\\d1','d2')",             '\\d1\\d2'         ],
+[ "Win32->catdir('\\d1','\\d2')",           '\\d1\\d2'         ],
+[ "Win32->catdir('\\d1','\\d2\\')",         '\\d1\\d2'         ],
 [ "Win32->catdir('','/d1','d2')",           '\\\\d1\\d2'         ],
 [ "Win32->catdir('','','/d1','d2')",        '\\\\\\d1\\d2'       ],
 [ "Win32->catdir('','//d1','d2')",          '\\\\\\d1\\d2'       ],
@@ -209,34 +213,39 @@ if ($^O eq 'MacOS') {
 [ "Win32->canonpath('//a/b/c/.../d')",  '\\\\a\\b\\d'         ],
 [ "Win32->canonpath('/a/b/c/../../d')", '\\a\\d'              ],
 [ "Win32->canonpath('/a/b/c/.../d')",   '\\a\\d'              ],
+[ "Win32->canonpath('\\../temp\\')",    '\\temp'              ],
 
-## Hmmm, we should test missing and relative base paths some day...
-## would need to cd to a known place, get the cwd() and use it I
-## think.
-[  "Win32->abs2rel('/t1/t2/t3','/t1/t2/t3')",    ''                       ],
-[  "Win32->abs2rel('/t1/t2/t4','/t1/t2/t3')",    '..\\t4'                 ],
-[  "Win32->abs2rel('/t1/t2','/t1/t2/t3')",       '..'                     ],
-[  "Win32->abs2rel('/t1/t2/t3/t4','/t1/t2/t3')", 't4'                     ],
-[  "Win32->abs2rel('/t4/t5/t6','/t1/t2/t3')",    '..\\..\\..\\t4\\t5\\t6' ],
-#[ "Win32->abs2rel('../t4','/t1/t2/t3')",        '\\t1\\t2\\t3\\..\\t4'   ],
-[  "Win32->abs2rel('/','/t1/t2/t3')",            '..\\..\\..'             ],
-[  "Win32->abs2rel('///','/t1/t2/t3')",          '..\\..\\..'             ],
-[  "Win32->abs2rel('/.','/t1/t2/t3')",           '..\\..\\..\\.'          ],
-[  "Win32->abs2rel('/./','/t1/t2/t3')",          '..\\..\\..'             ],
-[  "Win32->abs2rel('\\\\a/t1/t2/t4','/t2/t3')",  '..\\t4'                 ],
-[  "Win32->abs2rel('//a/t1/t2/t4','/t2/t3')",    '..\\t4'                 ],
-[  "Win32->abs2rel('A:/t1/t2/t3','B:/t1/t2/t3')",''                       ],
-[  "Win32->abs2rel('A:/t1/t2/t3/t4','B:/t1/t2/t3')",'t4'                  ],
+# FakeWin32 subclass (see below) just sets CWD to C:\one\two
 
-[ "Win32->rel2abs('temp','C:/')",                       'C:\\temp'                        ],
-[ "Win32->rel2abs('temp','C:/a')",                      'C:\\a\\temp'                     ],
-[ "Win32->rel2abs('temp','C:/a/')",                     'C:\\a\\temp'                     ],
-[ "Win32->rel2abs('../','C:/')",                        'C:\\'                            ],
-[ "Win32->rel2abs('../','C:/a')",                       'C:\\'                            ],
-[ "Win32->rel2abs('temp','//prague_main/work/')",       '\\\\prague_main\\work\\temp'     ],
-[ "Win32->rel2abs('../temp','//prague_main/work/')",    '\\\\prague_main\\work\\temp'     ],
-[ "Win32->rel2abs('temp','//prague_main/work')",        '\\\\prague_main\\work\\temp'     ],
-[ "Win32->rel2abs('../','//prague_main/work')",         '\\\\prague_main\\work'           ],
+[ "FakeWin32->abs2rel('/t1/t2/t3','/t1/t2/t3')",     ''                       ],
+[ "FakeWin32->abs2rel('/t1/t2/t4','/t1/t2/t3')",     '..\\t4'                 ],
+[ "FakeWin32->abs2rel('/t1/t2','/t1/t2/t3')",        '..'                     ],
+[ "FakeWin32->abs2rel('/t1/t2/t3/t4','/t1/t2/t3')",  't4'                     ],
+[ "FakeWin32->abs2rel('/t4/t5/t6','/t1/t2/t3')",     '..\\..\\..\\t4\\t5\\t6' ],
+[ "FakeWin32->abs2rel('../t4','/t1/t2/t3')",         '..\\..\\..\\one\\t4'    ],
+[ "FakeWin32->abs2rel('/','/t1/t2/t3')",             '..\\..\\..'             ],
+[ "FakeWin32->abs2rel('///','/t1/t2/t3')",           '..\\..\\..'             ],
+[ "FakeWin32->abs2rel('/.','/t1/t2/t3')",            '..\\..\\..'             ],
+[ "FakeWin32->abs2rel('/./','/t1/t2/t3')",           '..\\..\\..'             ],
+[ "FakeWin32->abs2rel('\\\\a/t1/t2/t4','/t2/t3')",   '\\\\a\\t1\\t2\\t4'      ],
+[ "FakeWin32->abs2rel('//a/t1/t2/t4','/t2/t3')",     '\\\\a\\t1\\t2\\t4'      ],
+[ "FakeWin32->abs2rel('A:/t1/t2/t3','A:/t1/t2/t3')",     ''                   ],
+[ "FakeWin32->abs2rel('A:/t1/t2/t3/t4','A:/t1/t2/t3')",  't4'                 ],
+[ "FakeWin32->abs2rel('A:/t1/t2/t3','A:/t1/t2/t3/t4')",  '..'                 ],
+[ "FakeWin32->abs2rel('A:/t1/t2/t3','B:/t1/t2/t3')",     'A:\\t1\\t2\\t3'     ],
+[ "FakeWin32->abs2rel('A:/t1/t2/t3/t4','B:/t1/t2/t3')",  'A:\\t1\\t2\\t3\\t4' ],
+[ "FakeWin32->abs2rel('E:/foo/bar/baz')",            'E:\\foo\\bar\\baz'      ],
+[ "FakeWin32->abs2rel('C:/one/two/three')",          'three'                  ],
+
+[ "FakeWin32->rel2abs('temp','C:/')",                       'C:\\temp'                        ],
+[ "FakeWin32->rel2abs('temp','C:/a')",                      'C:\\a\\temp'                     ],
+[ "FakeWin32->rel2abs('temp','C:/a/')",                     'C:\\a\\temp'                     ],
+[ "FakeWin32->rel2abs('../','C:/')",                        'C:\\'                            ],
+[ "FakeWin32->rel2abs('../','C:/a')",                       'C:\\'                            ],
+[ "FakeWin32->rel2abs('temp','//prague_main/work/')",       '\\\\prague_main\\work\\temp'     ],
+[ "FakeWin32->rel2abs('../temp','//prague_main/work/')",    '\\\\prague_main\\work\\temp'     ],
+[ "FakeWin32->rel2abs('temp','//prague_main/work')",        '\\\\prague_main\\work\\temp'     ],
+[ "FakeWin32->rel2abs('../','//prague_main/work')",         '\\\\prague_main\\work'           ],
 
 [ "VMS->case_tolerant()",         '1'  ],
 
@@ -323,7 +332,7 @@ if ($^O eq 'MacOS') {
 [ "OS2->catfile('c')",                    'c' ],
 [ "OS2->catfile('./c')",                  'c' ],
 
-[ "Mac->case_tolerant()",         '0'  ],
+[ "Mac->case_tolerant()",         '1'  ],
 
 [ "Mac->catpath('','','')",              ''                ],
 [ "Mac->catpath('',':','')",             ':'               ],
@@ -528,6 +537,12 @@ if ($^O eq 'MacOS') {
 
 plan tests => scalar @tests;
 
+{
+    @File::Spec::FakeWin32::ISA = qw(File::Spec::Win32);
+    sub File::Spec::FakeWin32::cwd { 'C:\\one\\two' }
+}
+
+
 # Test out the class methods
 for ( @tests ) {
    tryfunc( @$_ ) ;
@@ -549,10 +564,8 @@ sub tryfunc {
     }
 
     $function =~ s#\\#\\\\#g ;
-
-    my $got = eval ( $function =~ /^[^\$].*->/ 
-		     ? "join( ',', File::Spec::$function )"
-		     : "join( ',', $function )" );
+    $function =~ s/^([^\$].*->)/File::Spec::$1/;
+    my $got = join ',', eval $function;
 
     if ( $@ ) {
       if ( $@ =~ /^\Q$skip_exception/ ) {
