@@ -559,7 +559,7 @@ if ($^O eq 'MacOS') {
 
 ) ;
 
-if ($^O eq 'Win32') {
+if ($^O eq 'MSWin32') {
   push @tests, [ "FakeWin32->rel2abs('D:foo.txt')", 'D:\\alpha\\beta\\foo.txt' ];
 }
 
@@ -576,11 +576,12 @@ plan tests => scalar @tests;
     # Some funky stuff to override Cwd::getdcwd for testing purposes,
     # in limited scope.
     if ($Cwd::VERSION gt '2.17') {
+	local $^W;
 	*rel2abs = sub {
 	    my $self = shift;
 	    local *Cwd::getdcwd = sub {
-	      return 'D:\alpha\beta' if $_[0] eq 'D';
-	      return 'C:\one\two'    if $_[0] eq 'C';
+	      return 'D:\alpha\beta' if $_[0] eq 'D:';
+	      return 'C:\one\two'    if $_[0] eq 'C:';
 	      return;
 	    };
 	    *Cwd::getdcwd = *Cwd::getdcwd; # Avoid a 'used only once' warning
