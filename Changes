@@ -1,6 +1,40 @@
 CHANGES for File::Spec
 
-0.85
+0.85_01
+
+ Working toward 0.86, the version that will be released with perl 5.8.1.
+
+ - The t/rel2abs2rel.t test now is a little friendlier about emitting
+   its diagnostic debugging output. [Jarkko Hietaniemi]
+
+ - We now only require() Cwd when it's needed, on demand. [Michael
+   Schwern, Tels]
+
+ - Fixed some POD errors and redundancies in OS2.pm and Cygwin.pm.
+   [Michael Schwern]
+
+ - The internal method cwd() has been renamed to _cwd(), since it was
+   never meant for public use. [Michael Schwern]
+
+ - Several methods in File::Spec::Unix that just return constant
+   strings have been sped up.  catdir() has also been sped up there.
+   [Tels]
+
+ - Several canonpath() and catdir() bugs on Win32 have been fixed, and
+   tests added for them:
+      catdir('/', '../')   -> '\\'     (was '\..')
+      catdir('/', '..\\')  -> '\\      (was '')
+      canonpath('\\../')   -> '\\'     (was '')
+      canonpath('\\..\\')  -> '\\'     (was '')
+      canonpath('/../')    -> '\\'     (was '\..')
+      canonpath('/..\\')   -> '\\'     (was '')
+      catdir('\\', 'foo')  -> '\foo'   (was '\\foo')
+
+ - catpath($volume, $dirs, $file) on Mac OS now ignores any volume
+   that might be part of $dirs, enabling catpath($volume,
+   catdir(rootdir(), 'foo'), '') to work portably across platforms.
+
+0.85  Tue Jul 22 11:31 CDT 2003
 
  A bug-fix release relative to 0.84.  I've forked development into a
  "stable" branch (this one) and a more aggressive branch (as yet
@@ -34,7 +68,7 @@ CHANGES for File::Spec
 
 0.84  Wed Jul  9 22:21:23 CDT 2003
 
- I've taken the changes from bleadperl and created a new CPAN release
+ I (Ken)'ve taken the changes from bleadperl and created a new CPAN release
  from them, since they're pretty important changes.  The highlights,
  from what I can tell, are listed here.
 

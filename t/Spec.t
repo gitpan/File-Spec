@@ -171,6 +171,10 @@ if ($^O eq 'MacOS') {
 [ "Win32->catdir()",                        ''                   ],
 [ "Win32->catdir('')",                      '\\'                 ],
 [ "Win32->catdir('/')",                     '\\'                 ],
+[ "Win32->catdir('/', '../')",              '\\'                 ],
+[ "Win32->catdir('/', '..\\')",             '\\'                 ],
+[ "Win32->catdir('\\', '../')",             '\\'                 ],
+[ "Win32->catdir('\\', '..\\')",            '\\'                 ],
 [ "Win32->catdir('//d1','d2')",             '\\\\d1\\d2'         ],
 [ "Win32->catdir('\\d1\\','d2')",           '\\d1\\d2'         ],
 [ "Win32->catdir('\\d1','d2')",             '\\d1\\d2'         ],
@@ -190,6 +194,7 @@ if ($^O eq 'MacOS') {
 #[ "Win32->catdir('A:/d1','B:/d2','d3','')", 'A:\\d1\\d2\\d3'     ],
 [ "Win32->catdir('A:/d1','B:/d2','d3','')", 'A:\\d1\\B:\\d2\\d3' ],
 [ "Win32->catdir('A:/')",                   'A:\\'               ],
+[ "Win32->catdir('\\', 'foo')",             '\\foo'              ],
 
 [ "Win32->catfile('a','b','c')",        'a\\b\\c' ],
 [ "Win32->catfile('a','b','.\\c')",      'a\\b\\c'  ],
@@ -201,6 +206,7 @@ if ($^O eq 'MacOS') {
 [ "Win32->canonpath('')",               ''                    ],
 [ "Win32->canonpath('a:')",             'A:'                  ],
 [ "Win32->canonpath('A:f')",            'A:f'                 ],
+[ "Win32->canonpath('A:/')",            'A:\\'                ],
 [ "Win32->canonpath('//a\\b//c')",      '\\\\a\\b\\c'         ],
 [ "Win32->canonpath('/a/..../c')",      '\\a\\....\\c'        ],
 [ "Win32->canonpath('//a/b\\c')",       '\\\\a\\b\\c'         ],
@@ -214,6 +220,11 @@ if ($^O eq 'MacOS') {
 [ "Win32->canonpath('/a/b/c/../../d')", '\\a\\d'              ],
 [ "Win32->canonpath('/a/b/c/.../d')",   '\\a\\d'              ],
 [ "Win32->canonpath('\\../temp\\')",    '\\temp'              ],
+[ "Win32->canonpath('\\../')",          '\\'                  ],
+[ "Win32->canonpath('\\..\\')",         '\\'                  ],
+[ "Win32->canonpath('/../')",           '\\'                  ],
+[ "Win32->canonpath('/..\\')",          '\\'                  ],
+[ "Win32->can('_cwd')",                 qr/CODE/              ],
 
 # FakeWin32 subclass (see below) just sets CWD to C:\one\two
 
@@ -355,6 +366,7 @@ if ($^O eq 'MacOS') {
 
 [ "Mac->catpath('hd:','d1','file')",     'hd:d1:file'      ],
 [ "Mac->catpath('hd:',':d1:',':file')",  'hd:d1:file'      ],
+[ "Mac->catpath('hd:','hd:d1','')",      'hd:d1:'          ],
 
 [ "Mac->catpath('','d1','')",            ':d1:'            ],
 [ "Mac->catpath('',':d1','')",           ':d1:'            ],
@@ -539,7 +551,7 @@ plan tests => scalar @tests;
 
 {
     @File::Spec::FakeWin32::ISA = qw(File::Spec::Win32);
-    sub File::Spec::FakeWin32::cwd { 'C:\\one\\two' }
+    sub File::Spec::FakeWin32::_cwd { 'C:\\one\\two' }
 }
 
 

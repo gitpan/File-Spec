@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: File-Spec
-version: 0.85
+version: 0.85_01
 license: perl
 distribution_type: module
 requires:
@@ -14,10 +14,10 @@ conflicts: {}
 provides:
   File::Spec:
     file: lib/File/Spec.pm
-    version: 0.85
+    version: 0.85_01
   File::Spec::Cygwin:
     file: lib/File/Spec/Cygwin.pm
-    version: 1.0
+    version: 1.1
   File::Spec::Epoc:
     file: lib/File/Spec/Epoc.pm
     version: 1.1
@@ -32,11 +32,11 @@ provides:
     version: 1.2
   File::Spec::Unix:
     file: lib/File/Spec/Unix.pm
-    version: 1.4
+    version: 1.5
   File::Spec::VMS:
     file: lib/File/Spec/VMS.pm
     version: 1.4
   File::Spec::Win32:
     file: lib/File/Spec/Win32.pm
     version: 1.4
-generated_by: Module::Build version 0.18_04
+generated_by: Module::Build version 0.20_01

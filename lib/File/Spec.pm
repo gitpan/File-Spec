@@ -3,7 +3,7 @@ package File::Spec;
 use strict;
 use vars qw(@ISA $VERSION);
 
-$VERSION = '0.85';
+$VERSION = '0.85_01';
 
 my %module = (MacOS   => 'Mac',
 	      MSWin32 => 'Win32',
@@ -164,7 +164,8 @@ Mac OS (Classic).  It does consult the working environment for VMS
 
 =item path
 
-Takes no argument, returns the environment variable PATH as an array.
+Takes no argument, returns the environment variable PATH (or the local
+platform's equivalent) as a list.
 
     @PATH = File::Spec->path();
 
@@ -220,9 +221,10 @@ from the base path to the destination path:
     $rel_path = File::Spec->abs2rel( $path ) ;
     $rel_path = File::Spec->abs2rel( $path, $base ) ;
 
-If $base is not present or '', then L<cwd()|Cwd> is used. If $base is relative, 
-then it is converted to absolute form using L</rel2abs()>. This means that it
-is taken to be relative to L<cwd()|Cwd>.
+If $base is not present or '', then L<cwd()|Cwd> is used. If $base is
+relative, then it is converted to absolute form using
+L</rel2abs()>. This means that it is taken to be relative to
+L<cwd()|Cwd>.
 
 On systems with the concept of a volume, this assumes that both paths 
 are on the $destination volume, and ignores the $base volume. 
