@@ -1,5 +1,13 @@
 CHANGES for File::Spec
 
+0.89
+
+ - Fixed some pathological cases on VMS which broke canonpath() and
+   splitdir().  [Richard Levitte and Craig A. Berry]
+
+ - Fixed rel2abs() on VMS when passed a unix-style relative
+   path. [Craig A. Berry]
+
 0.88  Thu Jul 22 23:14:32 CDT 2004
 
  - rel2abs() on Win32 will now use the new Cwd::getdcwd() function, so
