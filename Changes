@@ -1,5 +1,10 @@
 CHANGES for File::Spec
 
+0.87  Fri Dec 19 08:03:28 CST 2003
+
+ - With a one-line change in the tests, backported to perl 5.004.
+   [Issue reported by Barry Kemble]
+
 0.86  Fri Sep 26 10:07:39 CDT 2003
 
  - This is the version released with perl 5.8.1.  It is identical to
