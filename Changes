@@ -1,6 +1,16 @@
 CHANGES for File::Spec
 
-0.84
+0.84_01  Fri Jul 11 16:14:29 CDT 2003
+
+ No actual code changes, just changes in other distribution files
+
+ - Dependencies are now listed explicitly in the Makefile.PL and
+   Build.PL scripts, as well as in the META.yml file.
+
+ - The t/abs2rel2abs.t test should now be more friendly about skipping
+   on platforms where it can't run properly.
+
+0.84  Wed Jul  9 22:21:23 CDT 2003
 
  I've taken the changes from bleadperl and created a new CPAN release
  from them, since they're pretty important changes.  The highlights,

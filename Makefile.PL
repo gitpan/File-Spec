@@ -9,4 +9,10 @@ WriteMakefile(
     'INC'           => '',     # e.g., '-I/usr/include/other' 
     'INSTALLDIRS'   => 'perl', # 'perl' makes it replace std modules
     'PL_FILES'      => {},
+    'PREREQ_PM'     => {
+			'File::Basename' => 0,
+			'Cwd' => 0,
+			'Test::More' => 0,
+			'Test' => 0,
+		       },
 );

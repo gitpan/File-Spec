@@ -1,16 +1,20 @@
 --- #YAML:1.0
 name: File-Spec
-version: 0.84
+version: 0.84_01
 license: perl
 distribution_type: module
-requires: {}
+requires:
+  Cwd: 0
+  File::Basename: 0
 recommends: {}
-build_requires: {}
+build_requires:
+  Test: 0
+  Test::More: 0
 conflicts: {}
 provides:
   File::Spec:
     file: lib/File/Spec.pm
-    version: 0.84
+    version: 0.84_01
   File::Spec::Cygwin:
     file: lib/File/Spec/Cygwin.pm
     version: 1.0
