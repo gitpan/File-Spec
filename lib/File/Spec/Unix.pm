@@ -329,13 +329,8 @@ relative, then it is converted to absolute form using
 L</rel2abs()>. This means that it is taken to be relative to
 L<cwd()|Cwd>.
 
-On systems with the concept of a volume, this assumes that both paths
-are on the $destination volume, and ignores the $base volume.  If this
-assumption may be wrong (like in VMS), trying to "unify" the paths with
-abs2rel() results in nonsense.
-
 On systems that have a grammar that indicates filenames, this ignores the 
-$base filename as well. Otherwise all path components are assumed to be
+$base filename. Otherwise all path components are assumed to be
 directories.
 
 If $path is relative, it is converted to absolute form using L</rel2abs()>.
@@ -411,11 +406,8 @@ relative, then it is converted to absolute form using
 L</rel2abs()>. This means that it is taken to be relative to
 L<cwd()|Cwd>.
 
-On systems with the concept of a volume, this assumes that both paths 
-are on the $base volume, and ignores the $path volume. 
-
-On systems that have a grammar that indicates filenames, this ignores the 
-$base filename as well. Otherwise all path components are assumed to be
+On systems that have a grammar that indicates filenames, this ignores
+the $base filename. Otherwise all path components are assumed to be
 directories.
 
 If $path is absolute, it is cleaned up and returned using L</canonpath()>.

@@ -16,4 +16,5 @@ lib/File/Spec/VMS.pm
 lib/File/Spec/Win32.pm
 t/Functions.t
 t/Spec.t
+t/crossplatform.t
 t/rel2abs2rel.t

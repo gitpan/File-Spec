@@ -298,18 +298,18 @@ sub abs2rel {
     my($self,$path,$base) = @_;
     $base = $self->_cwd() unless defined $base and length $base;
 
-    for ($path, $base) {
-      $_ = $self->canonpath($self->rel2abs($_));
-    }
-    my ($path_volume, $path_directories) = $self->splitpath($path, 1) ;
-    my ($base_volume, $base_directories) = $self->splitpath($base, 1);
+    for ($path, $base) { $_ = $self->canonpath($_) }
 
-    if ($path_volume and not $base_volume) {
-        ($base_volume) = $self->splitpath($self->_cwd);
-    }
+    my ($path_volume) = $self->splitpath($path, 1);
+    my ($base_volume) = $self->splitpath($base, 1);
 
     # Can't relativize across volumes
     return $path unless $path_volume eq $base_volume;
+
+    for ($path, $base) { $_ = $self->rel2abs($_) }
+
+    my $path_directories = ($self->splitpath($path, 1))[1];
+    my $base_directories = ($self->splitpath($base, 1))[1];
 
     # Now, remove all leading components that are the same
     my @pathchunks = $self->splitdir( $path_directories );

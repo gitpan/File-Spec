@@ -1,6 +1,27 @@
 CHANGES for File::Spec
 
-0.85_01
+0.85_02
+
+ - abs2rel() now behaves more consistently across platforms with the
+   notion of a volume.  If the volumes of the first and second
+   argument (the second argument may be implicit) do not agree, we do
+   not attempt to reconcile the paths, and simply return the first
+   argument.  Previously the volume of the second argument was
+   (usually) ignored, resulting in sometimes-garbage output.
+
+ - catpath() on MacOS now looks for a volume element (i.e. "Macintosh HD:")
+   in its first argument, and then its second argument.  The first
+   volume found will be used, and if none is found, none will be used.
+
+ - Fixed a problem in abs2rel() on Win32 in which the volume of the
+   current working directory would get added to the second argument if
+   none was specified.  This might have been somewhat helpful, but it
+   was contrary to the documented behavior.
+
+ - catdir('/', '../') on OS2 previously erroneously returned '//..',
+   and now it returns '/'.
+
+0.85_01  Thu Sep 11 16:18:54 CDT 2003
 
  Working toward 0.86, the version that will be released with perl 5.8.1.
 
