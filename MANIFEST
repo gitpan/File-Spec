@@ -1,4 +1,5 @@
 MANIFEST
+MANIFEST.SKIP
 Makefile.PL
 README
 Spec.pm
