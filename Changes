@@ -1,6 +1,18 @@
 CHANGES for File::Spec
 
-0.85_02
+0.85_03  Mon Sep 15 09:35:53 CDT 2003
+
+ - On VMS, if catpath() receives volume specifiers in both its first
+   two arguments, it will now use the volume in the first argument
+   only.  Previously it returned a non-syntactical result which
+   included both volumes.  This change is the same in spirit to the
+   catpath() MacOS change from version 0.85_02.
+
+ - Fixed an abs2rel() bug on VMS - previously
+   abs2rel('[t1.t2.t3]file','[t1.t2]') returned '[t3]file', now it
+   properly returns '[.t3]file'.
+
+0.85_02  Fri Sep 12 17:11:13 CDT 2003
 
  - abs2rel() now behaves more consistently across platforms with the
    notion of a volume.  If the volumes of the first and second
@@ -16,7 +28,9 @@ CHANGES for File::Spec
  - Fixed a problem in abs2rel() on Win32 in which the volume of the
    current working directory would get added to the second argument if
    none was specified.  This might have been somewhat helpful, but it
-   was contrary to the documented behavior.
+   was contrary to the documented behavior.  For example,
+   abs2rel('C:/foo/bar', '/foo') used to return 'bar', now it returns
+   'C:/foo/bar' because there's no guarantee /foo is actually C:/foo .
 
  - catdir('/', '../') on OS2 previously erroneously returned '//..',
    and now it returns '/'.

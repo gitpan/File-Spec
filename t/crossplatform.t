@@ -3,8 +3,9 @@
 use strict;
 use Test::More;
 use File::Spec;
+local $|=1;
 
-my @platforms = qw(Cygwin Epoc Mac OS2 Unix Win32); # VMS isn't ready yet
+my @platforms = qw(Cygwin Epoc Mac OS2 Unix VMS Win32);
 my $tests_per_platform = 7;
 
 plan tests => 1 + @platforms * $tests_per_platform;
@@ -37,11 +38,12 @@ foreach my $platform (@platforms) {
     my $v = $volumes{$platform} || '';
     my $other_v = $other_vols{$platform} || '';
     
-    # Fake out the CWD as A:/foo
+    # Fake out the rootdir on MacOS
     no strict 'refs';
-    my $cwd = $module->catpath($v, $module->catdir($module->rootdir, 'foo'), '');
-    local *{"File::Spec::${platform}::_cwd"} = sub { $cwd };
+    my $save_w = $^W;
+    $^W = 0;
     local *{"File::Spec::Mac::rootdir"} = sub { "Macintosh HD:" };
+    $^W = $save_w;
     use strict 'refs';
     
     my ($file, $base, $result);

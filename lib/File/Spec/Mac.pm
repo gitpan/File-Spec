@@ -585,6 +585,8 @@ sub catpath {
 	return $file ;
     }
 
+    # We look for a volume in $volume, then in $directory, but not both
+
     my ($dir_volume, $dir_dirs) = $self->splitpath($directory, 1);
 
     $volume = $dir_volume unless length $volume;
